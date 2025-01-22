@@ -1,4 +1,4 @@
-﻿namespace Sbw.SimpleLoops;
+﻿namespace Sb.SimpleLoops;
 
 public record SimpleLoopConfiguration
 {

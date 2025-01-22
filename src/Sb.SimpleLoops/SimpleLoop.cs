@@ -3,9 +3,9 @@ using System.Threading;
 using System;
 using Microsoft.Extensions.Logging;
 using System.Linq;
-using Sbw.Wrappers;
+using Sb.Wrappers;
 
-namespace Sbw.SimpleLoops;
+namespace Sb.SimpleLoops;
 
 public class SimpleLoop: ISimpleLoop
 {

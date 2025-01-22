@@ -1,4 +1,4 @@
-﻿namespace Sbw.Wrappers;
+﻿namespace Sb.Wrappers;
 
 public class TaskDelayWrapper : ITaskDelayWrapper
 {

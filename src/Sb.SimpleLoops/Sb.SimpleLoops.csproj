@@ -5,9 +5,8 @@
     <Nullable>enable</Nullable>
     <Title>Simple Loops</Title>
     <Authors>Lucian Bornaz</Authors>
-    <Company>Tiny Simple Software</Company>
+    <Company>Simple Bitware</Company>
     <PackageReadmeFile>README.md</PackageReadmeFile>
-    <PackageIcon>arrow_loop2.png</PackageIcon>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -30,7 +29,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Sbw.Wrappers\Sbw.Wrappers.csproj" />
+    <ProjectReference Include="..\Sb.Wrappers\Sb.Wrappers.csproj" />
   </ItemGroup>
 
 </Project>

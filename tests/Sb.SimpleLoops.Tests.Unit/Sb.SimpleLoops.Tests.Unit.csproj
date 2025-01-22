@@ -4,7 +4,6 @@
     <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-
     <IsPackable>false</IsPackable>
   </PropertyGroup>
 
@@ -18,8 +17,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Sbw.SimpleLoops\Sbw.SimpleLoops.csproj" />
-    <ProjectReference Include="..\..\src\Sbw.Wrappers\Sbw.Wrappers.csproj" />
+    <ProjectReference Include="..\..\src\Sb.SimpleLoops\Sb.SimpleLoops.csproj" />
+    <ProjectReference Include="..\..\src\Sb.Wrappers\Sb.Wrappers.csproj" />
   </ItemGroup>
 
 </Project>

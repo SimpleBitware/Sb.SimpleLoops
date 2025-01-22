@@ -1,8 +1,8 @@
 using Microsoft.Extensions.Logging;
 using Moq;
-using Sbw.Wrappers;
+using Sb.Wrappers;
 
-namespace Sbw.SimpleLoops.Tests.Unit;
+namespace Sb.SimpleLoops.Tests.Unit;
 
 public class SimpleLoopTests
 {

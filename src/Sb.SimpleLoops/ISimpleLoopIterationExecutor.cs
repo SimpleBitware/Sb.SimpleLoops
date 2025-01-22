@@ -1,7 +1,7 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 
-namespace Sbw.SimpleLoops;
+namespace Sb.SimpleLoops;
 
 public interface ISimpleLoopIterationExecutor
 {
