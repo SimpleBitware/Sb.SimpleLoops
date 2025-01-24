@@ -7,19 +7,20 @@ using Sb.Common.Wrappers;
 
 namespace Sb.SimpleLoops;
 
-public class SimpleLoop: ISimpleLoop
+public class SimpleLoop<T>: ISimpleLoop
+    where T : ISimpleLoopIterationExecutor
 {
-    private readonly ILogger<SimpleLoop> logger;
+    private readonly ILogger<SimpleLoop<T>> logger;
     private readonly SimpleLoopConfiguration configuration;
-    private readonly ISimpleLoopIterationExecutor iterationExecutor;
+    private readonly T iterationExecutor;
     private readonly ITaskDelayWrapper taskDelayWrapper;
     private readonly IDateTimeWrapper dateTimeWrapper;
     private readonly string loopDescriptor;
 
     public SimpleLoop(
-        ILogger<SimpleLoop> logger,
+        ILogger<SimpleLoop<T>> logger,
         SimpleLoopConfiguration configuration,
-        ISimpleLoopIterationExecutor iterationExecutor,
+        T iterationExecutor,
         ITaskDelayWrapper taskDelayWrapper,
         IDateTimeWrapper dateTimeWrapper)
     {
@@ -33,7 +34,7 @@ public class SimpleLoop: ISimpleLoop
 
     public async Task RunAsync(CancellationToken stoppingToken)
     {
-        logger.LogInformation("{loopDescriptor} loop started at: {dateTime}", loopDescriptor, DateTime.UtcNow);
+        logger.LogInformation("{loopDescriptor} loop started at: {dateTime}", loopDescriptor, dateTimeWrapper.UtcNow);
 
         while (!stoppingToken.IsCancellationRequested)
         {
@@ -64,7 +65,7 @@ public class SimpleLoop: ISimpleLoop
             if (!continueWithoutWaiting)
             {
                 logger.LogInformation("{loopDescriptor} loop completed at: {dateTime}. Next run at {nextRun}",
-                    loopDescriptor, DateTime.UtcNow, DateTime.UtcNow.AddMilliseconds(configuration.WaitingTimeInMs));
+                    loopDescriptor, dateTimeWrapper.UtcNow, dateTimeWrapper.UtcNow.AddMilliseconds(configuration.WaitingTimeInMs));
 
                 await taskDelayWrapper.DelayAsync(configuration.WaitingTimeInMs, stoppingToken);
             }
