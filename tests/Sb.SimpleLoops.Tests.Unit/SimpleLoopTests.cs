@@ -1,6 +1,6 @@
 using Microsoft.Extensions.Logging;
 using Moq;
-using Sb.Wrappers;
+using Sb.Common.Wrappers;
 
 namespace Sb.SimpleLoops.Tests.Unit;
 
@@ -8,11 +8,13 @@ public class SimpleLoopTests
 {
     private readonly Mock<ILogger<SimpleLoop>> loggerMock;
     private readonly Mock<SimpleLoopConfiguration> configurationMock;
-    
+    private readonly Mock<IDateTimeWrapper> dateTimeWrapperMock;
+
     public SimpleLoopTests()
     {
         loggerMock = new Mock<ILogger<SimpleLoop>>();
         configurationMock = new Mock<SimpleLoopConfiguration>();
+        dateTimeWrapperMock = new Mock<IDateTimeWrapper>();
     }
 
     [Test]
@@ -25,7 +27,12 @@ public class SimpleLoopTests
 
         var taskDelayWrapperMock = new Mock<ITaskDelayWrapper>();
         var iterationExecutorMock = new Mock<ISimpleLoopIterationExecutor>();
-        var sut = new SimpleLoop(loggerMock.Object, configurationMock.Object, iterationExecutorMock.Object, taskDelayWrapperMock.Object);
+        var sut = new SimpleLoop(
+            loggerMock.Object, 
+            configurationMock.Object, 
+            iterationExecutorMock.Object, 
+            taskDelayWrapperMock.Object,
+            dateTimeWrapperMock.Object);
 
         // Act
         await sut.RunAsync(cancellationToken);
@@ -46,7 +53,12 @@ public class SimpleLoopTests
         iterationExecutorMock.Setup(x => x.RunAsync(It.IsAny<CancellationToken>()))
                             .ReturnsAsync(true)
                             .Callback(()=> cancellationTokenSource.Cancel());
-        var sut = new SimpleLoop(loggerMock.Object, configurationMock.Object, iterationExecutorMock.Object, taskDelayWrapperMock.Object);
+        var sut = new SimpleLoop(
+            loggerMock.Object,
+            configurationMock.Object,
+            iterationExecutorMock.Object,
+            taskDelayWrapperMock.Object,
+            dateTimeWrapperMock.Object);
 
         // Act
         await sut.RunAsync(cancellationToken);
@@ -68,7 +80,12 @@ public class SimpleLoopTests
         iterationExecutorMock.Setup(x => x.RunAsync(It.IsAny<CancellationToken>()))
                             .ReturnsAsync(false)
                             .Callback(() => cancellationTokenSource.Cancel());
-        var sut = new SimpleLoop(loggerMock.Object, configurationMock.Object, iterationExecutorMock.Object, taskDelayWrapperMock.Object);
+        var sut = new SimpleLoop(
+            loggerMock.Object,
+            configurationMock.Object,
+            iterationExecutorMock.Object,
+            taskDelayWrapperMock.Object,
+            dateTimeWrapperMock.Object);
 
         // Act
         await sut.RunAsync(cancellationToken);

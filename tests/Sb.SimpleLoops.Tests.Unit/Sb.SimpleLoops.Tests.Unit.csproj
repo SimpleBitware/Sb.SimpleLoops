@@ -18,7 +18,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Sb.SimpleLoops\Sb.SimpleLoops.csproj" />
-    <ProjectReference Include="..\..\src\Sb.Wrappers\Sb.Wrappers.csproj" />
   </ItemGroup>
 
 </Project>

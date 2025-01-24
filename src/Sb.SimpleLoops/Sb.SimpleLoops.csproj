@@ -26,10 +26,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.1" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\Sb.Wrappers\Sb.Wrappers.csproj" />
+    <PackageReference Include="Sb.Common.Wrappers" Version="1.0.3" />
   </ItemGroup>
 
 </Project>

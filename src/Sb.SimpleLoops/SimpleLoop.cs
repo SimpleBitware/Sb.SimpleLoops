@@ -3,7 +3,7 @@ using System.Threading;
 using System;
 using Microsoft.Extensions.Logging;
 using System.Linq;
-using Sb.Wrappers;
+using Sb.Common.Wrappers;
 
 namespace Sb.SimpleLoops;
 
@@ -13,19 +13,21 @@ public class SimpleLoop: ISimpleLoop
     private readonly SimpleLoopConfiguration configuration;
     private readonly ISimpleLoopIterationExecutor iterationExecutor;
     private readonly ITaskDelayWrapper taskDelayWrapper;
-
+    private readonly IDateTimeWrapper dateTimeWrapper;
     private readonly string loopDescriptor;
 
     public SimpleLoop(
         ILogger<SimpleLoop> logger,
         SimpleLoopConfiguration configuration,
         ISimpleLoopIterationExecutor iterationExecutor,
-        ITaskDelayWrapper taskDelayWrapper)
+        ITaskDelayWrapper taskDelayWrapper,
+        IDateTimeWrapper dateTimeWrapper)
     {
         this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
         this.configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
         this.iterationExecutor = iterationExecutor ?? throw new ArgumentNullException(nameof(iterationExecutor));
         this.taskDelayWrapper = taskDelayWrapper ?? throw new ArgumentNullException(nameof(taskDelayWrapper));
+        this.dateTimeWrapper = dateTimeWrapper ?? throw new ArgumentNullException(nameof(dateTimeWrapper));
         this.loopDescriptor = iterationExecutor.GetType().Name;
     }
 
@@ -68,7 +70,7 @@ public class SimpleLoop: ISimpleLoop
             }
         }
 
-        logger.LogInformation("{loopDescriptor} loop stopped at: {dateTime}", loopDescriptor, DateTime.UtcNow);
+        logger.LogInformation("{loopDescriptor} loop stopped at: {dateTime}", loopDescriptor, dateTimeWrapper.UtcNow);
     }
 
     protected virtual void HandleException(Exception ex)
