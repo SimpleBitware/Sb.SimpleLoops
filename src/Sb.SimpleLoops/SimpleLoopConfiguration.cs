@@ -1,9 +1,9 @@
 ﻿namespace Sb.SimpleLoops;
 
-public record SimpleLoopConfiguration
+public record SimpleLoopConfiguration<T>
 {
     /// <summary>
-    /// Wait time in milliseconds between iterations.
+    /// Wait time between iterations in milliseconds.
     /// </summary>
     public int WaitingTimeInMs { get; set; }
 

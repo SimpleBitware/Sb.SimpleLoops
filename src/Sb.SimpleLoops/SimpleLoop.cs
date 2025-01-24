@@ -7,19 +7,19 @@ using Sb.Common.Wrappers;
 
 namespace Sb.SimpleLoops;
 
-public class SimpleLoop<T>: ISimpleLoop
+public class SimpleLoop<T> : ISimpleLoop
     where T : ISimpleLoopIterationExecutor
 {
     private readonly ILogger<SimpleLoop<T>> logger;
-    private readonly SimpleLoopConfiguration configuration;
+    private readonly SimpleLoopConfiguration<T> configuration;
     private readonly T iterationExecutor;
     private readonly ITaskDelayWrapper taskDelayWrapper;
     private readonly IDateTimeWrapper dateTimeWrapper;
-    private readonly string loopDescriptor;
+    private readonly string loopDescriptor = typeof(SimpleLoop<T>).Name;
 
     public SimpleLoop(
         ILogger<SimpleLoop<T>> logger,
-        SimpleLoopConfiguration configuration,
+        SimpleLoopConfiguration<T> configuration,
         T iterationExecutor,
         ITaskDelayWrapper taskDelayWrapper,
         IDateTimeWrapper dateTimeWrapper)
@@ -29,24 +29,23 @@ public class SimpleLoop<T>: ISimpleLoop
         this.iterationExecutor = iterationExecutor ?? throw new ArgumentNullException(nameof(iterationExecutor));
         this.taskDelayWrapper = taskDelayWrapper ?? throw new ArgumentNullException(nameof(taskDelayWrapper));
         this.dateTimeWrapper = dateTimeWrapper ?? throw new ArgumentNullException(nameof(dateTimeWrapper));
-        this.loopDescriptor = iterationExecutor.GetType().Name;
     }
 
-    public async Task RunAsync(CancellationToken stoppingToken)
+    public async Task RunAsync(CancellationToken cancellationToken)
     {
         logger.LogInformation("{loopDescriptor} loop started at: {dateTime}", loopDescriptor, dateTimeWrapper.UtcNow);
 
-        while (!stoppingToken.IsCancellationRequested)
+        while (!cancellationToken.IsCancellationRequested)
         {
             bool continueWithoutWaiting = false;
 
             try
             {
-                continueWithoutWaiting = await iterationExecutor.RunAsync(stoppingToken);
+                continueWithoutWaiting = await iterationExecutor.RunAsync(cancellationToken);
             }
             catch (OperationCanceledException ex)
             {
-                logger.LogWarning(ex, "Cancelled.");
+                logger.LogWarning(ex, "{loopDescriptor} has been cancelled.", loopDescriptor);
             }
             catch (AggregateException ae)
             {
@@ -67,7 +66,7 @@ public class SimpleLoop<T>: ISimpleLoop
                 logger.LogInformation("{loopDescriptor} loop completed at: {dateTime}. Next run at {nextRun}",
                     loopDescriptor, dateTimeWrapper.UtcNow, dateTimeWrapper.UtcNow.AddMilliseconds(configuration.WaitingTimeInMs));
 
-                await taskDelayWrapper.DelayAsync(configuration.WaitingTimeInMs, stoppingToken);
+                await taskDelayWrapper.DelayAsync(configuration.WaitingTimeInMs, cancellationToken);
             }
         }
 
@@ -76,7 +75,7 @@ public class SimpleLoop<T>: ISimpleLoop
 
     protected virtual void HandleException(Exception ex)
     {
-        logger.LogError(ex, "Unhandled exception.");
+        logger.LogError(ex, "{loopDescriptor} unhandled exception.", loopDescriptor);
         if ((ex is StackOverflowException or OutOfMemoryException) || configuration.PropagateException)
             throw ex;
     }
