@@ -3,6 +3,9 @@ using System.Threading.Tasks;
 
 namespace Sb.SimpleLoops;
 
+/// <summary>
+/// Simple loop iteration executor interface.
+/// </summary>
 public interface ISimpleLoopIterationExecutor
 {
     /// <summary>
@@ -10,5 +13,5 @@ public interface ISimpleLoopIterationExecutor
     /// </summary>
     /// <param name="cancellationToken">Cancellation token</param>
     /// <returns>False when it should wait before running the next iteration otherwise true.</returns>
-    Task<bool> RunAsync(CancellationToken cancellationToken);
+    Task<IterationResult> RunAsync(CancellationToken cancellationToken);
 }

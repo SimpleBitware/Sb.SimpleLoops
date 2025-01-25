@@ -1,5 +1,9 @@
 ﻿namespace Sb.SimpleLoops;
 
+/// <summary>
+/// Simple loop configuration.
+/// </summary>
+/// <typeparam name="T">The time of simple loop.</typeparam>
 public record SimpleLoopConfiguration<T>
 {
     /// <summary>
@@ -10,5 +14,5 @@ public record SimpleLoopConfiguration<T>
     /// <summary>
     /// If true, exceptions will be propagated to the caller.
     /// </summary>
-    public bool PropagateException { get; set; }
+    public bool PropagateExceptions { get; set; }
 }

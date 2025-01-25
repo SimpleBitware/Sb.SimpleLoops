@@ -6,11 +6,12 @@ namespace Sb.SimpleLoops.Tests.Unit;
 
 public class SimpleLoopTests
 {
-    private readonly Mock<ILogger<SimpleLoop<ISimpleLoopIterationExecutor>>> loggerMock;
-    private readonly Mock<SimpleLoopConfiguration<ISimpleLoopIterationExecutor>> configurationMock;
-    private readonly Mock<IDateTimeWrapper> dateTimeWrapperMock;
+    private Mock<ILogger<SimpleLoop<ISimpleLoopIterationExecutor>>> loggerMock;
+    private Mock<SimpleLoopConfiguration<ISimpleLoopIterationExecutor>> configurationMock;
+    private Mock<IDateTimeWrapper> dateTimeWrapperMock;
 
-    public SimpleLoopTests()
+    [OneTimeSetUp]
+    public void OneTimeSetUp()
     {
         loggerMock = new Mock<ILogger<SimpleLoop<ISimpleLoopIterationExecutor>>>();
         configurationMock = new Mock<SimpleLoopConfiguration<ISimpleLoopIterationExecutor>>();
@@ -42,7 +43,7 @@ public class SimpleLoopTests
     }
 
     [Test]
-    public async Task Should_Continue_Execution_Without_Waiting_When_IterationExecutor_Returns_True()
+    public async Task Should_Continue_Execution_Without_Waiting_When_IterationExecutor_Returns_Continue()
     {
         // Arrange
         var cancellationTokenSource = new CancellationTokenSource();
@@ -51,8 +52,9 @@ public class SimpleLoopTests
         var taskDelayWrapperMock = new Mock<ITaskDelayWrapper>();
         var iterationExecutorMock = new Mock<ISimpleLoopIterationExecutor>();
         iterationExecutorMock.Setup(x => x.RunAsync(It.IsAny<CancellationToken>()))
-                            .ReturnsAsync(true)
+                            .ReturnsAsync(IterationResult.Continue)
                             .Callback(()=> cancellationTokenSource.Cancel());
+
         var sut = new SimpleLoop<ISimpleLoopIterationExecutor>(
             loggerMock.Object,
             configurationMock.Object,
@@ -69,7 +71,7 @@ public class SimpleLoopTests
     }
 
     [Test]
-    public async Task Should_Wait_Between_Iterations_When_IterationExecutor_Returns_False()
+    public async Task Should_Wait_Between_Iterations_When_IterationExecutor_Returns_Wait()
     {
         // Arrange
         var cancellationTokenSource = new CancellationTokenSource();
@@ -78,8 +80,9 @@ public class SimpleLoopTests
         var taskDelayWrapperMock = new Mock<ITaskDelayWrapper>();
         var iterationExecutorMock = new Mock<ISimpleLoopIterationExecutor>();
         iterationExecutorMock.Setup(x => x.RunAsync(It.IsAny<CancellationToken>()))
-                            .ReturnsAsync(false)
+                            .ReturnsAsync(IterationResult.Wait)
                             .Callback(() => cancellationTokenSource.Cancel());
+
         var sut = new SimpleLoop<ISimpleLoopIterationExecutor>(
             loggerMock.Object,
             configurationMock.Object,
@@ -96,6 +99,33 @@ public class SimpleLoopTests
     }
 
     [Test]
+    public async Task Should_Exit_Loop_When_IterationExecutor_Returns_Stop()
+    {
+        // Arrange
+        var cancellationTokenSource = new CancellationTokenSource();
+        var cancellationToken = cancellationTokenSource.Token;
+
+        var taskDelayWrapperMock = new Mock<ITaskDelayWrapper>();
+        var iterationExecutorMock = new Mock<ISimpleLoopIterationExecutor>();
+        iterationExecutorMock.Setup(x => x.RunAsync(It.IsAny<CancellationToken>()))
+                            .ReturnsAsync(IterationResult.Stop);
+
+        var sut = new SimpleLoop<ISimpleLoopIterationExecutor>(
+            loggerMock.Object,
+            configurationMock.Object,
+            iterationExecutorMock.Object,
+            taskDelayWrapperMock.Object,
+            dateTimeWrapperMock.Object);
+
+        // Act
+        await sut.RunAsync(cancellationToken);
+
+        // Assert
+        iterationExecutorMock.Verify(x => x.RunAsync(It.IsAny<CancellationToken>()), Times.Once);
+        taskDelayWrapperMock.Verify(x => x.DelayAsync(It.IsAny<int>(), It.IsAny<CancellationToken>()), Times.Never);
+    }
+
+    [Test]
     public void Should_Throw_Exception_When_PropagateException_True()
     {
         // Arrange
@@ -105,11 +135,11 @@ public class SimpleLoopTests
         var taskDelayWrapperMock = new Mock<ITaskDelayWrapper>();
         var iterationExecutorMock = new Mock<ISimpleLoopIterationExecutor>();
         iterationExecutorMock.Setup(x => x.RunAsync(It.IsAny<CancellationToken>()))
-                            .Callback(() => throw new Exception());
+                            .Returns(Task.FromException<IterationResult>(new Exception()));
 
         var configuration = new SimpleLoopConfiguration<ISimpleLoopIterationExecutor>
         {
-            PropagateException = true
+            PropagateExceptions = true
         };
         var sut = new SimpleLoop<ISimpleLoopIterationExecutor>(
             loggerMock.Object,
@@ -120,5 +150,37 @@ public class SimpleLoopTests
 
         // Act
         Assert.ThrowsAsync<Exception>(() => sut.RunAsync(cancellationToken));
+    }
+
+    [Test]
+    public async Task Should_Wait_Between_Iterations_When_Iterator_Throws_Exception_And_PropagateException_False()
+    {
+        // Arrange
+        var cancellationTokenSource = new CancellationTokenSource();
+        var cancellationToken = cancellationTokenSource.Token;
+
+        var taskDelayWrapperMock = new Mock<ITaskDelayWrapper>();
+        var iterationExecutorMock = new Mock<ISimpleLoopIterationExecutor>();
+        iterationExecutorMock.Setup(x => x.RunAsync(It.IsAny<CancellationToken>()))
+                            .Returns(Task.FromException<IterationResult>(new Exception()))
+                            .Callback(() => cancellationTokenSource.Cancel());
+
+        var configuration = new SimpleLoopConfiguration<ISimpleLoopIterationExecutor>
+        {
+            PropagateExceptions = false
+        };
+        var sut = new SimpleLoop<ISimpleLoopIterationExecutor>(
+            loggerMock.Object,
+            configuration,
+            iterationExecutorMock.Object,
+            taskDelayWrapperMock.Object,
+            dateTimeWrapperMock.Object);
+
+        // Act
+        await sut.RunAsync(cancellationToken);
+
+        // Assert
+        iterationExecutorMock.Verify(x => x.RunAsync(It.IsAny<CancellationToken>()), Times.Once);
+        taskDelayWrapperMock.Verify(x => x.DelayAsync(It.IsAny<int>(), It.IsAny<CancellationToken>()), Times.Once);
     }
 }

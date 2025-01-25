@@ -7,6 +7,10 @@ using Sb.Common.Wrappers;
 
 namespace Sb.SimpleLoops;
 
+/// <summary>
+/// Simple loop which invokes iterator executor.
+/// </summary>
+/// <typeparam name="T">The type of iterator executor.</typeparam>
 public class SimpleLoop<T> : ISimpleLoop
     where T : ISimpleLoopIterationExecutor
 {
@@ -15,7 +19,6 @@ public class SimpleLoop<T> : ISimpleLoop
     private readonly T iterationExecutor;
     private readonly ITaskDelayWrapper taskDelayWrapper;
     private readonly IDateTimeWrapper dateTimeWrapper;
-    private readonly string loopDescriptor = typeof(SimpleLoop<T>).Name;
 
     public SimpleLoop(
         ILogger<SimpleLoop<T>> logger,
@@ -33,19 +36,21 @@ public class SimpleLoop<T> : ISimpleLoop
 
     public async Task RunAsync(CancellationToken cancellationToken)
     {
-        logger.LogInformation("{loopDescriptor} loop started at: {dateTime}", loopDescriptor, dateTimeWrapper.UtcNow);
+        logger.LogInformation("Loop started");
 
         while (!cancellationToken.IsCancellationRequested)
         {
-            bool continueWithoutWaiting = false;
+            var iterationContinuation = IterationResult.Wait;
+            logger.LogInformation("Iteration started");
 
             try
             {
-                continueWithoutWaiting = await iterationExecutor.RunAsync(cancellationToken);
+                iterationContinuation = await iterationExecutor.RunAsync(cancellationToken);
             }
             catch (OperationCanceledException ex)
             {
-                logger.LogWarning(ex, "{loopDescriptor} has been cancelled.", loopDescriptor);
+                logger.LogWarning(ex, "Loop cancelled.");
+                return;
             }
             catch (AggregateException ae)
             {
@@ -61,22 +66,26 @@ public class SimpleLoop<T> : ISimpleLoop
                 HandleException(ex);
             }
 
-            if (!continueWithoutWaiting)
+            switch (iterationContinuation)
             {
-                logger.LogInformation("{loopDescriptor} loop completed at: {dateTime}. Next run at {nextRun}",
-                    loopDescriptor, dateTimeWrapper.UtcNow, dateTimeWrapper.UtcNow.AddMilliseconds(configuration.WaitingTimeInMs));
-
-                await taskDelayWrapper.DelayAsync(configuration.WaitingTimeInMs, cancellationToken);
+                case IterationResult.Continue:
+                    logger.LogInformation("Iteration completed.");
+                    break;
+                case IterationResult.Stop:
+                    logger.LogInformation("Iteration completed and loop stopped.");
+                    return;
+                case IterationResult.Wait:
+                    logger.LogInformation("Iteration completed. Next run at {nextRun}", dateTimeWrapper.UtcNow.AddMilliseconds(configuration.WaitingTimeInMs));
+                    await taskDelayWrapper.DelayAsync(configuration.WaitingTimeInMs, cancellationToken);
+                    break;
             }
         }
-
-        logger.LogInformation("{loopDescriptor} loop stopped at: {dateTime}", loopDescriptor, dateTimeWrapper.UtcNow);
     }
 
     protected virtual void HandleException(Exception ex)
     {
-        logger.LogError(ex, "{loopDescriptor} unhandled exception.", loopDescriptor);
-        if ((ex is StackOverflowException or OutOfMemoryException) || configuration.PropagateException)
+        logger.LogError(ex, "Unexpected exception.");
+        if ((ex is StackOverflowException or OutOfMemoryException) || configuration.PropagateExceptions)
             throw ex;
     }
 }
