@@ -41,10 +41,10 @@ public class SimpleLoop<T> : ISimpleLoop
         while (!cancellationToken.IsCancellationRequested)
         {
             var iterationContinuation = IterationResult.Wait;
-            logger.LogInformation("Iteration started");
 
             try
             {
+                logger.LogInformation("Iteration started");
                 iterationContinuation = await iterationExecutor.RunAsync(cancellationToken);
             }
             catch (OperationCanceledException ex)
