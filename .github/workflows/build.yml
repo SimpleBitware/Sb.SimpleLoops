@@ -88,4 +88,4 @@ jobs:
       - name: Publish NuGet package
         run: |
           cd ${{ env.NuGetDirectory }}
-          dotnet nuget push "*.nupkg" --api-key "${{ secrets.NUGET_API_KEY }}" --source "${{ vars.NUGET_REPO_URL }}" --skip-duplicate
+          dotnet nuget push "*.nupkg" --api-key "${{ secrets.NUGET_API_KEY }}" --source ${{ vars.NUGET_REPO_URL }} --skip-duplicate
