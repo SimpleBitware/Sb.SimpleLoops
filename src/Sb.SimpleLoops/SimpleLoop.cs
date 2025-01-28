@@ -22,6 +22,15 @@ public class SimpleLoop<T> : ISimpleLoop
 
     public SimpleLoop(
         ILogger<SimpleLoop<T>> logger,
+        T iterationExecutor,
+        ITaskDelayWrapper taskDelayWrapper,
+        IDateTimeWrapper dateTimeWrapper
+        ): this(logger, new SimpleLoopConfiguration<T>(), iterationExecutor, taskDelayWrapper, dateTimeWrapper)
+    {
+    }
+
+    public SimpleLoop(
+        ILogger<SimpleLoop<T>> logger,
         SimpleLoopConfiguration<T> configuration,
         T iterationExecutor,
         ITaskDelayWrapper taskDelayWrapper,

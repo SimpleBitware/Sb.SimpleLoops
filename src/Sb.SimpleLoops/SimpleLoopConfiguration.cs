@@ -9,7 +9,7 @@ public record SimpleLoopConfiguration<T>
     /// <summary>
     /// Wait time between iterations in milliseconds.
     /// </summary>
-    public int WaitingTimeInMs { get; set; }
+    public int WaitingTimeInMs { get; set; } = 1000;
 
     /// <summary>
     /// If true, exceptions will be propagated to the caller.

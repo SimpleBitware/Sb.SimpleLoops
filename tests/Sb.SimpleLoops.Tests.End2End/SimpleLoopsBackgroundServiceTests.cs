@@ -61,8 +61,7 @@ namespace Sb.SimpleLoops.Tests.End2End
                 {
                     services.AddHostedService<SimpleLoopsBackgroundService>();
                     services.AddSingleton<ISimpleLoop, SimpleLoop<ISimpleLoopIterationExecutor>>();
-                    services.AddSingleton<ISimpleLoopIterationExecutor>(services => loopIteratorExecutorMock.Object);
-                    services.AddSingleton<SimpleLoopConfiguration<ISimpleLoopIterationExecutor>>();
+                    services.AddSingleton(services => loopIteratorExecutorMock.Object);
                     services.AddSingleton<ITaskDelayWrapper, TaskDelayWrapper>();
                     services.AddSingleton<IDateTimeWrapper, DateTimeWrapper>();
                 });
