@@ -1,5 +1,5 @@
 # SimpleLoops
-Simple library for running loops in parallel
+Simple library for running async loops in parallel
 
 ## How to use it
 SimpleLoopsBackgroundService detects all ISimpleLoop service registrations (such as `services.AddScoped<ISimpleLoop, SimpleLoop<<T>()`) and run them. <br/>
