@@ -6,7 +6,13 @@
     <Title>Simple Loops</Title>
     <Authors>Lucian Bornaz</Authors>
     <Company>Simple Bitware</Company>
+    <Description>Simple library for running loops in parallel</Description>
     <PackageReadmeFile>README.md</PackageReadmeFile>
+    <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
+    <PackageId>Sb.SimpleLoops</PackageId>
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>https://github.com/SimpleBitware/Sb.SimpleLoops</RepositoryUrl>
+    <MinVerTagPrefix>v</MinVerTagPrefix>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -28,8 +34,12 @@
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.2" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="6.0.1" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="6.0.4" />
-    <PackageReference Include="Sb.Common.Wrappers" Version="1.0.3" />
+    <PackageReference Include="Sb.Common.Wrappers" Version="2.0.0" />
     <PackageReference Include="System.Text.Json" Version="6.0.11" />
+    <PackageReference Include="MinVer" Version="6.0.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
   </ItemGroup>
 
 </Project>

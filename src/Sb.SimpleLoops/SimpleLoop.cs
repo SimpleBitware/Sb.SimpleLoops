@@ -76,7 +76,7 @@ public class SimpleLoop<T> : ISimpleLoop
                     return;
                 case IterationResult.Wait:
                     logger.LogInformation("Iteration completed. Next run at {nextRun}", dateTimeWrapper.UtcNow.AddMilliseconds(configuration.WaitingTimeInMs));
-                    await taskDelayWrapper.DelayAsync(configuration.WaitingTimeInMs, cancellationToken);
+                    await taskDelayWrapper.Delay(configuration.WaitingTimeInMs, cancellationToken);
                     break;
             }
         }

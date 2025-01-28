@@ -67,7 +67,7 @@ public class SimpleLoopTests
 
         // Assert
         iterationExecutorMock.Verify(x => x.RunAsync(It.IsAny<CancellationToken>()), Times.Once);
-        taskDelayWrapperMock.Verify(x => x.DelayAsync(It.IsAny<int>(), It.IsAny<CancellationToken>()), Times.Never);
+        taskDelayWrapperMock.Verify(x => x.Delay(It.IsAny<int>(), It.IsAny<CancellationToken>()), Times.Never);
     }
 
     [Test]
@@ -95,7 +95,7 @@ public class SimpleLoopTests
 
         // Assert
         iterationExecutorMock.Verify(x => x.RunAsync(It.IsAny<CancellationToken>()), Times.Once);
-        taskDelayWrapperMock.Verify(x => x.DelayAsync(It.IsAny<int>(), It.IsAny<CancellationToken>()), Times.Once);
+        taskDelayWrapperMock.Verify(x => x.Delay(It.IsAny<int>(), It.IsAny<CancellationToken>()), Times.Once);
     }
 
     [Test]
@@ -122,7 +122,7 @@ public class SimpleLoopTests
 
         // Assert
         iterationExecutorMock.Verify(x => x.RunAsync(It.IsAny<CancellationToken>()), Times.Once);
-        taskDelayWrapperMock.Verify(x => x.DelayAsync(It.IsAny<int>(), It.IsAny<CancellationToken>()), Times.Never);
+        taskDelayWrapperMock.Verify(x => x.Delay(It.IsAny<int>(), It.IsAny<CancellationToken>()), Times.Never);
     }
 
     [Test]
@@ -181,6 +181,6 @@ public class SimpleLoopTests
 
         // Assert
         iterationExecutorMock.Verify(x => x.RunAsync(It.IsAny<CancellationToken>()), Times.Once);
-        taskDelayWrapperMock.Verify(x => x.DelayAsync(It.IsAny<int>(), It.IsAny<CancellationToken>()), Times.Once);
+        taskDelayWrapperMock.Verify(x => x.Delay(It.IsAny<int>(), It.IsAny<CancellationToken>()), Times.Once);
     }
 }
