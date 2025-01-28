@@ -8,11 +8,13 @@ public record SimpleLoopConfiguration<T>
 {
     /// <summary>
     /// Wait time between iterations in milliseconds.
+    /// Default is 15 seconds.
     /// </summary>
-    public int WaitingTimeInMs { get; set; } = 1000;
+    public int WaitingTimeInMs { get; set; } = 15000;
 
     /// <summary>
     /// If true, exceptions will be propagated to the caller.
+    /// Default is false. All exceptions will be logged and loop will continue execution.
     /// </summary>
     public bool PropagateExceptions { get; set; }
 }
