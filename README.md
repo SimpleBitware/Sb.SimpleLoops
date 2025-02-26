@@ -11,8 +11,8 @@ services.AddScoped<ISimpleLoopIterationExecutor, LoopItemExecutor>();           
 services.AddSingleton<SimpleLoopConfiguration<ISimpleLoopIterationExecutor>>();  /* optional, loop configuration otherwise the default configuration will be used */
 
 /* dependencies */
-services.AddSingleton<ITaskDelayWrapper, TaskDelayWrapper>();
-services.AddSingleton<IDateTimeWrapper, DateTimeWrapper>();
+services.AddSingleton<ITask, TaskDelayWrapper>();
+services.AddSingleton<IDateTime, DateTimeWrapper>();
 ```
 
 [Code sample](https://github.com/SimpleBitware/Sb.SimpleLoops/blob/main/tests/Sb.SimpleLoops.Tests.End2End/SimpleLoopsBackgroundServiceTests.cs)
