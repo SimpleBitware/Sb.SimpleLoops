@@ -26,8 +26,8 @@ namespace Sb.SimpleLoops.Tests.End2End
                     services.AddScoped<ISimpleLoop, SimpleLoop<ISimpleLoopIterationExecutor>>();
                     services.AddScoped<ISimpleLoopIterationExecutor>(services => loopIteratorExecutorMock.Object);
                     services.AddSingleton<SimpleLoopConfiguration<ISimpleLoopIterationExecutor>>();
-                    services.AddSingleton<ITaskDelayWrapper, TaskDelayWrapper>();
-                    services.AddSingleton<IDateTimeWrapper, DateTimeWrapper>();
+                    services.AddSingleton<ITask, TaskWrapper>();
+                    services.AddSingleton<IDateTime, DateTimeWrapper>();
                 });
             using var host = builder.Build();
 
@@ -62,8 +62,8 @@ namespace Sb.SimpleLoops.Tests.End2End
                     services.AddHostedService<SimpleLoopsBackgroundService>();
                     services.AddSingleton<ISimpleLoop, SimpleLoop<ISimpleLoopIterationExecutor>>();
                     services.AddSingleton(services => loopIteratorExecutorMock.Object);
-                    services.AddSingleton<ITaskDelayWrapper, TaskDelayWrapper>();
-                    services.AddSingleton<IDateTimeWrapper, DateTimeWrapper>();
+                    services.AddSingleton<ITask, TaskWrapper>();
+                    services.AddSingleton<IDateTime, DateTimeWrapper>();
                 });
             using var host = builder.Build();
 

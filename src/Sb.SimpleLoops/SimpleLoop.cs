@@ -17,15 +17,15 @@ public class SimpleLoop<T> : ISimpleLoop
     private readonly ILogger<SimpleLoop<T>> logger;
     private readonly SimpleLoopConfiguration<T> configuration;
     private readonly T iterationExecutor;
-    private readonly ITaskDelayWrapper taskDelayWrapper;
-    private readonly IDateTimeWrapper dateTimeWrapper;
+    private readonly ITask taskWrapper;
+    private readonly IDateTime dateTimeWrapper;
 
     public SimpleLoop(
         ILogger<SimpleLoop<T>> logger,
         T iterationExecutor,
-        ITaskDelayWrapper taskDelayWrapper,
-        IDateTimeWrapper dateTimeWrapper
-        ): this(logger, new SimpleLoopConfiguration<T>(), iterationExecutor, taskDelayWrapper, dateTimeWrapper)
+        ITask taskWrapper,
+        IDateTime dateTimeWrapper
+        ): this(logger, new SimpleLoopConfiguration<T>(), iterationExecutor, taskWrapper, dateTimeWrapper)
     {
     }
 
@@ -33,13 +33,13 @@ public class SimpleLoop<T> : ISimpleLoop
         ILogger<SimpleLoop<T>> logger,
         SimpleLoopConfiguration<T> configuration,
         T iterationExecutor,
-        ITaskDelayWrapper taskDelayWrapper,
-        IDateTimeWrapper dateTimeWrapper)
+        ITask taskWrapper,
+        IDateTime dateTimeWrapper)
     {
         this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
         this.configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
         this.iterationExecutor = iterationExecutor ?? throw new ArgumentNullException(nameof(iterationExecutor));
-        this.taskDelayWrapper = taskDelayWrapper ?? throw new ArgumentNullException(nameof(taskDelayWrapper));
+        this.taskWrapper = taskWrapper ?? throw new ArgumentNullException(nameof(taskWrapper));
         this.dateTimeWrapper = dateTimeWrapper ?? throw new ArgumentNullException(nameof(dateTimeWrapper));
     }
 
@@ -85,7 +85,7 @@ public class SimpleLoop<T> : ISimpleLoop
                     return;
                 case IterationResult.Wait:
                     logger.LogInformation("Iteration completed. Next run at {nextRun}", dateTimeWrapper.UtcNow.AddMilliseconds(configuration.WaitingTimeInMs));
-                    await taskDelayWrapper.Delay(configuration.WaitingTimeInMs, cancellationToken);
+                    await taskWrapper.Delay(configuration.WaitingTimeInMs, cancellationToken);
                     break;
             }
         }
