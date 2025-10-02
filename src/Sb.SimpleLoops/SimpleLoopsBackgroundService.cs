@@ -14,17 +14,17 @@ namespace Sb.SimpleLoops;
 /// </summary>
 public class SimpleLoopsBackgroundService : BackgroundService
 {
-    private readonly IServiceProvider serviceProvider;
     private readonly IHostApplicationLifetime hostApplicationLifetime;
+    private readonly IEnumerable<ISimpleLoop> simpleLoops;
     private readonly ILogger<SimpleLoopsBackgroundService> logger;
 
     public SimpleLoopsBackgroundService(
-        IServiceProvider serviceProvider,
         IHostApplicationLifetime hostApplicationLifetime,
+        IEnumerable<ISimpleLoop> simpleLoops,
         ILogger<SimpleLoopsBackgroundService> logger)
     {
-        this.serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
         this.hostApplicationLifetime = hostApplicationLifetime ?? throw new ArgumentNullException(nameof(hostApplicationLifetime));
+        this.simpleLoops = simpleLoops ?? throw new ArgumentNullException(nameof(simpleLoops));
         this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
@@ -42,20 +42,17 @@ public class SimpleLoopsBackgroundService : BackgroundService
 
     protected override async Task ExecuteAsync(CancellationToken cancellationToken)
     {
+        if (!simpleLoops.Any())
+        {
+            logger.LogWarning("No loops found.");
+            return;
+        }
+
+        LogLoopTypesToBeExecuted(simpleLoops);
         await Task.Yield();
 
         try
         {
-            using var scope = serviceProvider.CreateScope();
-            var simpleLoops = scope.ServiceProvider.GetRequiredService<IEnumerable<ISimpleLoop>>();
-            if (!simpleLoops.Any())
-            {
-                logger.LogWarning("No loops found.");
-                return;
-            }
-
-            LogLoopTypesToBeExecuted(simpleLoops);
-
             var simpleLoopsTasks = simpleLoops.Select(loop => loop.RunAsync(cancellationToken)).ToArray();
             await WaitForLoopsAsync(simpleLoopsTasks, cancellationToken);
         }

@@ -13,7 +13,7 @@ public record SimpleLoopConfiguration<T>
     public int WaitingTimeInMs { get; set; } = 15000;
 
     /// <summary>
-    /// If true, exceptions will be propagated to the caller.
+    /// If true, loop exits and exceptions will be propagated to the caller.
     /// Default is false. All exceptions will be logged and loop will continue execution.
     /// </summary>
     public bool PropagateExceptions { get; set; }
