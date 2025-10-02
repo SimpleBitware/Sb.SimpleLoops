@@ -2,7 +2,7 @@
 Simple library for running async loops
 
 ## How to use it
-SimpleLoopsBackgroundService detects all ISimpleLoop service registrations (such as `services.AddScoped<ISimpleLoop, SimpleLoop<<T>()`) and run them. <br/>
+SimpleLoopsBackgroundService detects all ISimpleLoop service registrations (such as `services.AddSingleton<ISimpleLoop, SimpleLoop<<T>()`) and run them. <br/>
 At minimum, the following services needs to be registered:<br/>
 ```
 services.AddHostedService<SimpleLoopsBackgroundService>();                       /* background service which runs the loops */
