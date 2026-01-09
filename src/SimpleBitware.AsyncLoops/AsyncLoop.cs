@@ -3,35 +3,35 @@ using System.Threading;
 using System;
 using Microsoft.Extensions.Logging;
 using System.Linq;
-using Sb.Common.Wrappers;
+using SimpleBitware.Common.Abstractions;
 
-namespace Sb.SimpleLoops;
+namespace SimpleBitware.AsyncLoops;
 
 /// <summary>
 /// Simple loop which invokes iterator executor.
 /// </summary>
 /// <typeparam name="T">The type of iterator executor.</typeparam>
-public class SimpleLoop<T> : ISimpleLoop
-    where T : ISimpleLoopIterationExecutor
+public class AsyncLoop<T> : IAsyncLoop
+    where T : IAsyncLoopIterationExecutor
 {
-    private readonly ILogger<SimpleLoop<T>> logger;
-    private readonly SimpleLoopConfiguration<T> configuration;
+    private readonly ILogger<AsyncLoop<T>> logger;
+    private readonly AsyncLoopConfiguration<T> configuration;
     private readonly T iterationExecutor;
     private readonly ITask taskWrapper;
     private readonly IDateTime dateTimeWrapper;
 
-    public SimpleLoop(
-        ILogger<SimpleLoop<T>> logger,
+    public AsyncLoop(
+        ILogger<AsyncLoop<T>> logger,
         T iterationExecutor,
         ITask taskWrapper,
         IDateTime dateTimeWrapper
-        ): this(logger, new SimpleLoopConfiguration<T>(), iterationExecutor, taskWrapper, dateTimeWrapper)
+        ): this(logger, new AsyncLoopConfiguration<T>(), iterationExecutor, taskWrapper, dateTimeWrapper)
     {
     }
 
-    public SimpleLoop(
-        ILogger<SimpleLoop<T>> logger,
-        SimpleLoopConfiguration<T> configuration,
+    public AsyncLoop(
+        ILogger<AsyncLoop<T>> logger,
+        AsyncLoopConfiguration<T> configuration,
         T iterationExecutor,
         ITask taskWrapper,
         IDateTime dateTimeWrapper)

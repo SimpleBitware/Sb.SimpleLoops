@@ -1,12 +1,12 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 
-namespace Sb.SimpleLoops;
+namespace SimpleBitware.AsyncLoops;
 
 /// <summary>
 /// Simple loop iteration executor interface.
 /// </summary>
-public interface ISimpleLoopIterationExecutor
+public interface IAsyncLoopIterationExecutor
 {
     /// <summary>
     /// Run a single iteration of the loop.

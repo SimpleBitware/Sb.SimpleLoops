@@ -3,15 +3,15 @@
   <PropertyGroup>
     <TargetFramework>net6</TargetFramework>
     <Nullable>enable</Nullable>
-    <Title>Simple Loops</Title>
+    <Title>Async Loops</Title>
     <Authors>Lucian Bornaz</Authors>
     <Company>Simple Bitware</Company>
     <Description>Simple library for running async loops in parallel</Description>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
-    <PackageId>Sb.SimpleLoops</PackageId>
+    <PackageId>SimpleBitware.AsyncLoops</PackageId>
     <RepositoryType>git</RepositoryType>
-    <RepositoryUrl>https://github.com/SimpleBitware/Sb.SimpleLoops</RepositoryUrl>
+    <RepositoryUrl>https://github.com/SimpleBitware/AsyncLoops</RepositoryUrl>
     <MinVerTagPrefix>v</MinVerTagPrefix>
   </PropertyGroup>
 
@@ -34,7 +34,7 @@
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.2" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="6.0.1" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="6.0.4" />
-    <PackageReference Include="Sb.Common.Wrappers" Version="3.0.0" />
+    <PackageReference Include="SimpleBitware.Common.Abstractions" Version="1.0.2" />
     <PackageReference Include="System.Text.Json" Version="9.0.2" />
     <PackageReference Include="MinVer" Version="6.0.0">
       <PrivateAssets>all</PrivateAssets>

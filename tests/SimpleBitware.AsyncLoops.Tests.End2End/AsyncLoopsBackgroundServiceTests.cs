@@ -1,17 +1,18 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Moq;
-using Sb.Common.Wrappers;
+using SimpleBitware.AsyncLoops;
+using SimpleBitware.Common.Abstractions;
 
 namespace Sb.SimpleLoops.Tests.End2End;
 
-public class SimpleLoopsBackgroundServiceTests
+public class AsyncLoopsBackgroundServiceTests
 {
     [Test]
     public async Task Should_Run_Loops_And_Exit_When_Loop_Completed()
     {
         // Arrange
-        var loopIteratorExecutorMock = new Mock<ISimpleLoopIterationExecutor>();
+        var loopIteratorExecutorMock = new Mock<IAsyncLoopIterationExecutor>();
         loopIteratorExecutorMock.Setup(x => x.RunAsync(It.IsAny<CancellationToken>()))
             .Returns<CancellationToken>(cancellationToken => Task.Run(async () =>
             {
@@ -22,12 +23,12 @@ public class SimpleLoopsBackgroundServiceTests
         var builder = Host.CreateDefaultBuilder()
             .ConfigureServices(services =>
             {
-                services.AddHostedService<SimpleLoopsBackgroundService>();
-                services.AddSingleton<ISimpleLoop, SimpleLoop<ISimpleLoopIterationExecutor>>();
-                services.AddSingleton<ISimpleLoopIterationExecutor>(services => loopIteratorExecutorMock.Object);
-                services.AddSingleton<SimpleLoopConfiguration<ISimpleLoopIterationExecutor>>();
-                services.AddSingleton<ITask, TaskWrapper>();
-                services.AddSingleton<IDateTime, DateTimeWrapper>();
+                services.AddHostedService<AsyncLoopsBackgroundService>();
+                services.AddSingleton<IAsyncLoop, AsyncLoop<IAsyncLoopIterationExecutor>>();
+                services.AddSingleton<IAsyncLoopIterationExecutor>(services => loopIteratorExecutorMock.Object);
+                services.AddSingleton<AsyncLoopConfiguration<IAsyncLoopIterationExecutor>>();
+                services.AddSingleton<ITask, TaskProvider>();
+                services.AddSingleton<IDateTime, DateTimeProvider>();
             });
         using var host = builder.Build();
 
@@ -44,7 +45,7 @@ public class SimpleLoopsBackgroundServiceTests
     public async Task Should_Run_Loops_And_Exist_When_Cancellation_Token_Cancelled()
     {
         // Arrange
-        var loopIteratorExecutorMock = new Mock<ISimpleLoopIterationExecutor>();
+        var loopIteratorExecutorMock = new Mock<IAsyncLoopIterationExecutor>();
         loopIteratorExecutorMock.Setup(x => x.RunAsync(It.IsAny<CancellationToken>()))
             .Returns<CancellationToken>(cancellationToken => Task.Run(async () =>
             {
@@ -59,11 +60,11 @@ public class SimpleLoopsBackgroundServiceTests
         var builder = Host.CreateDefaultBuilder()
             .ConfigureServices(services =>
             {
-                services.AddHostedService<SimpleLoopsBackgroundService>();
-                services.AddSingleton<ISimpleLoop, SimpleLoop<ISimpleLoopIterationExecutor>>();
+                services.AddHostedService<AsyncLoopsBackgroundService>();
+                services.AddSingleton<IAsyncLoop, AsyncLoop<IAsyncLoopIterationExecutor>>();
                 services.AddSingleton(services => loopIteratorExecutorMock.Object);
-                services.AddSingleton<ITask, TaskWrapper>();
-                services.AddSingleton<IDateTime, DateTimeWrapper>();
+                services.AddSingleton<ITask, TaskProvider>();
+                services.AddSingleton<IDateTime, DateTimeProvider>();
             });
         using var host = builder.Build();
 

@@ -1,20 +1,20 @@
 using Microsoft.Extensions.Logging;
 using Moq;
-using Sb.Common.Wrappers;
+using SimpleBitware.Common.Abstractions;
 
-namespace Sb.SimpleLoops.Tests.Unit;
+namespace SimpleBitware.AsyncLoops.Tests.Unit;
 
-public class SimpleLoopTests
+public class AsyncLoopTests
 {
-    private Mock<ILogger<SimpleLoop<ISimpleLoopIterationExecutor>>> loggerMock;
-    private Mock<SimpleLoopConfiguration<ISimpleLoopIterationExecutor>> configurationMock;
+    private Mock<ILogger<AsyncLoop<IAsyncLoopIterationExecutor>>> loggerMock;
+    private Mock<AsyncLoopConfiguration<IAsyncLoopIterationExecutor>> configurationMock;
     private Mock<IDateTime> dateTimeMock;
 
     [OneTimeSetUp]
     public void OneTimeSetUp()
     {
-        loggerMock = new Mock<ILogger<SimpleLoop<ISimpleLoopIterationExecutor>>>();
-        configurationMock = new Mock<SimpleLoopConfiguration<ISimpleLoopIterationExecutor>>();
+        loggerMock = new Mock<ILogger<AsyncLoop<IAsyncLoopIterationExecutor>>>();
+        configurationMock = new Mock<AsyncLoopConfiguration<IAsyncLoopIterationExecutor>>();
         dateTimeMock = new Mock<IDateTime>();
     }
 
@@ -27,8 +27,8 @@ public class SimpleLoopTests
         cancellationTokenSource.Cancel();
 
         var taskMock = new Mock<ITask>();
-        var iterationExecutorMock = new Mock<ISimpleLoopIterationExecutor>();
-        var sut = new SimpleLoop<ISimpleLoopIterationExecutor>(
+        var iterationExecutorMock = new Mock<IAsyncLoopIterationExecutor>();
+        var sut = new AsyncLoop<IAsyncLoopIterationExecutor>(
             loggerMock.Object, 
             configurationMock.Object, 
             iterationExecutorMock.Object, 
@@ -50,12 +50,12 @@ public class SimpleLoopTests
         var cancellationToken = cancellationTokenSource.Token;
 
         var taskMock = new Mock<ITask>();
-        var iterationExecutorMock = new Mock<ISimpleLoopIterationExecutor>();
+        var iterationExecutorMock = new Mock<IAsyncLoopIterationExecutor>();
         iterationExecutorMock.Setup(x => x.RunAsync(It.IsAny<CancellationToken>()))
                             .ReturnsAsync(IterationResult.Continue)
                             .Callback(()=> cancellationTokenSource.Cancel());
 
-        var sut = new SimpleLoop<ISimpleLoopIterationExecutor>(
+        var sut = new AsyncLoop<IAsyncLoopIterationExecutor>(
             loggerMock.Object,
             configurationMock.Object,
             iterationExecutorMock.Object,
@@ -78,12 +78,12 @@ public class SimpleLoopTests
         var cancellationToken = cancellationTokenSource.Token;
 
         var taskMock = new Mock<ITask>();
-        var iterationExecutorMock = new Mock<ISimpleLoopIterationExecutor>();
+        var iterationExecutorMock = new Mock<IAsyncLoopIterationExecutor>();
         iterationExecutorMock.Setup(x => x.RunAsync(It.IsAny<CancellationToken>()))
                             .ReturnsAsync(IterationResult.Wait)
                             .Callback(() => cancellationTokenSource.Cancel());
 
-        var sut = new SimpleLoop<ISimpleLoopIterationExecutor>(
+        var sut = new AsyncLoop<IAsyncLoopIterationExecutor>(
             loggerMock.Object,
             configurationMock.Object,
             iterationExecutorMock.Object,
@@ -106,11 +106,11 @@ public class SimpleLoopTests
         var cancellationToken = cancellationTokenSource.Token;
 
         var taskMock = new Mock<ITask>();
-        var iterationExecutorMock = new Mock<ISimpleLoopIterationExecutor>();
+        var iterationExecutorMock = new Mock<IAsyncLoopIterationExecutor>();
         iterationExecutorMock.Setup(x => x.RunAsync(It.IsAny<CancellationToken>()))
                             .ReturnsAsync(IterationResult.Stop);
 
-        var sut = new SimpleLoop<ISimpleLoopIterationExecutor>(
+        var sut = new AsyncLoop<IAsyncLoopIterationExecutor>(
             loggerMock.Object,
             configurationMock.Object,
             iterationExecutorMock.Object,
@@ -133,15 +133,15 @@ public class SimpleLoopTests
         var cancellationToken = cancellationTokenSource.Token;
 
         var taskMock = new Mock<ITask>();
-        var iterationExecutorMock = new Mock<ISimpleLoopIterationExecutor>();
+        var iterationExecutorMock = new Mock<IAsyncLoopIterationExecutor>();
         iterationExecutorMock.Setup(x => x.RunAsync(It.IsAny<CancellationToken>()))
                             .Returns(Task.FromException<IterationResult>(new Exception()));
 
-        var configuration = new SimpleLoopConfiguration<ISimpleLoopIterationExecutor>
+        var configuration = new AsyncLoopConfiguration<IAsyncLoopIterationExecutor>
         {
             PropagateExceptions = true
         };
-        var sut = new SimpleLoop<ISimpleLoopIterationExecutor>(
+        var sut = new AsyncLoop<IAsyncLoopIterationExecutor>(
             loggerMock.Object,
             configuration,
             iterationExecutorMock.Object,
@@ -160,16 +160,16 @@ public class SimpleLoopTests
         var cancellationToken = cancellationTokenSource.Token;
 
         var taskMock = new Mock<ITask>();
-        var iterationExecutorMock = new Mock<ISimpleLoopIterationExecutor>();
+        var iterationExecutorMock = new Mock<IAsyncLoopIterationExecutor>();
         iterationExecutorMock.Setup(x => x.RunAsync(It.IsAny<CancellationToken>()))
                             .Returns(Task.FromException<IterationResult>(new Exception()))
                             .Callback(() => cancellationTokenSource.Cancel());
 
-        var configuration = new SimpleLoopConfiguration<ISimpleLoopIterationExecutor>
+        var configuration = new AsyncLoopConfiguration<IAsyncLoopIterationExecutor>
         {
             PropagateExceptions = false
         };
-        var sut = new SimpleLoop<ISimpleLoopIterationExecutor>(
+        var sut = new AsyncLoop<IAsyncLoopIterationExecutor>(
             loggerMock.Object,
             configuration,
             iterationExecutorMock.Object,

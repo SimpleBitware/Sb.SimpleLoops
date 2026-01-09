@@ -1,12 +1,12 @@
 ﻿using System.Threading.Tasks;
 using System.Threading;
 
-namespace Sb.SimpleLoops;
+namespace SimpleBitware.AsyncLoops;
 
 /// <summary>
 /// Simple loop interface.
 /// </summary>
-public interface ISimpleLoop
+public interface IAsyncLoop
 {
     Task RunAsync(CancellationToken stoppingToken);
 }

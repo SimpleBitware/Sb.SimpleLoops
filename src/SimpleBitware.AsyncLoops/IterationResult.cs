@@ -1,4 +1,4 @@
-﻿namespace Sb.SimpleLoops;
+﻿namespace SimpleBitware.AsyncLoops;
 
 /// <summary>
 /// Loop iteration result.

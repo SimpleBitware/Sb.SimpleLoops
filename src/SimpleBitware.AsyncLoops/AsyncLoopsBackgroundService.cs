@@ -7,21 +7,21 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Sb.SimpleLoops;
+namespace SimpleBitware.AsyncLoops;
 
 /// <summary>
 /// Background service that runs simple loops.
 /// </summary>
-public class SimpleLoopsBackgroundService : BackgroundService
+public class AsyncLoopsBackgroundService : BackgroundService
 {
     private readonly IHostApplicationLifetime hostApplicationLifetime;
-    private readonly IEnumerable<ISimpleLoop> simpleLoops;
-    private readonly ILogger<SimpleLoopsBackgroundService> logger;
+    private readonly IEnumerable<IAsyncLoop> simpleLoops;
+    private readonly ILogger<AsyncLoopsBackgroundService> logger;
 
-    public SimpleLoopsBackgroundService(
+    public AsyncLoopsBackgroundService(
         IHostApplicationLifetime hostApplicationLifetime,
-        IEnumerable<ISimpleLoop> simpleLoops,
-        ILogger<SimpleLoopsBackgroundService> logger)
+        IEnumerable<IAsyncLoop> simpleLoops,
+        ILogger<AsyncLoopsBackgroundService> logger)
     {
         this.hostApplicationLifetime = hostApplicationLifetime ?? throw new ArgumentNullException(nameof(hostApplicationLifetime));
         this.simpleLoops = simpleLoops ?? throw new ArgumentNullException(nameof(simpleLoops));
@@ -77,7 +77,7 @@ public class SimpleLoopsBackgroundService : BackgroundService
         hostApplicationLifetime.StopApplication();
     }
 
-    private void LogLoopTypesToBeExecuted(IEnumerable<ISimpleLoop> simpleLoops)
+    private void LogLoopTypesToBeExecuted(IEnumerable<IAsyncLoop> simpleLoops)
     {
         var loopTypes = string.Join(", ", simpleLoops.Select(x => x.GetType()));
         logger.LogInformation("Loops to be executed: {LoopTypes}", loopTypes);

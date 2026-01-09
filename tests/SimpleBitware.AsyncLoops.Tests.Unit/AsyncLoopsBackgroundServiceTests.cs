@@ -2,16 +2,16 @@
 using Microsoft.Extensions.Logging;
 using Moq;
 
-namespace Sb.SimpleLoops.Tests.Unit;
+namespace SimpleBitware.AsyncLoops.Tests.Unit;
 
-public class SimpleLoopsBackgroundServiceTests
+public class AsyncLoopsBackgroundServiceTests
 {
-    private Mock<ILogger<SimpleLoopsBackgroundService>> loggerMock;
+    private Mock<ILogger<AsyncLoopsBackgroundService>> loggerMock;
 
     [OneTimeSetUp]
     public void OneTimeSetUp()
     {
-        loggerMock = new Mock<ILogger<SimpleLoopsBackgroundService>>();
+        loggerMock = new Mock<ILogger<AsyncLoopsBackgroundService>>();
     }
 
     [Test]
@@ -19,9 +19,9 @@ public class SimpleLoopsBackgroundServiceTests
     {
         // Arrange
         var hostApplicationLifetimeMock = new Mock<IHostApplicationLifetime>();
-        var simpleLoops = Array.Empty<ISimpleLoop>();
+        var simpleLoops = Array.Empty<IAsyncLoop>();
 
-        var sut = new SimpleLoopsBackgroundService(
+        var sut = new AsyncLoopsBackgroundService(
             hostApplicationLifetimeMock.Object,
             simpleLoops,
             loggerMock.Object);
@@ -38,7 +38,7 @@ public class SimpleLoopsBackgroundServiceTests
     {
         // Arrange
         var hostApplicationLifetimeMock = new Mock<IHostApplicationLifetime>();
-        var simpleLoopMock = new Mock<ISimpleLoop>();
+        var simpleLoopMock = new Mock<IAsyncLoop>();
         simpleLoopMock.Setup(x => x.RunAsync(It.IsAny<CancellationToken>()))
             .Returns<CancellationToken>(cancellationToken => Task.Run(async () =>
             {
@@ -50,7 +50,7 @@ public class SimpleLoopsBackgroundServiceTests
 
         var cancellationTokenSource = new CancellationTokenSource();
 
-        var sut = new SimpleLoopsBackgroundService(
+        var sut = new AsyncLoopsBackgroundService(
             hostApplicationLifetimeMock.Object,
             [simpleLoopMock.Object],
             loggerMock.Object);
@@ -71,11 +71,11 @@ public class SimpleLoopsBackgroundServiceTests
     {
         // Arrange
         var hostApplicationLifetimeMock = new Mock<IHostApplicationLifetime>();
-        var simpleLoopMock = new Mock<ISimpleLoop>();
+        var simpleLoopMock = new Mock<IAsyncLoop>();
         simpleLoopMock.Setup(x => x.RunAsync(It.IsAny<CancellationToken>()))
             .Returns(Task.FromException(new Exception()));
 
-        var sut = new SimpleLoopsBackgroundService(
+        var sut = new AsyncLoopsBackgroundService(
             hostApplicationLifetimeMock.Object,
             [simpleLoopMock.Object],
             loggerMock.Object);
@@ -94,7 +94,7 @@ public class SimpleLoopsBackgroundServiceTests
     {
         // Arrange
         var hostApplicationLifetimeMock = new Mock<IHostApplicationLifetime>();
-        var simpleLoop1Mock = new Mock<ISimpleLoop>();
+        var simpleLoop1Mock = new Mock<IAsyncLoop>();
         simpleLoop1Mock.Setup(x => x.RunAsync(It.IsAny<CancellationToken>()))
             .Returns<CancellationToken>(cancellationToken => Task.Run(async () =>
             {
@@ -104,11 +104,11 @@ public class SimpleLoopsBackgroundServiceTests
                 } while (!cancellationToken.IsCancellationRequested);
             }, cancellationToken));
 
-        var simpleLoop2Mock = new Mock<ISimpleLoop>();
+        var simpleLoop2Mock = new Mock<IAsyncLoop>();
         simpleLoop2Mock.Setup(x => x.RunAsync(It.IsAny<CancellationToken>()))
             .Returns(Task.FromException(new Exception()));
 
-        var sut = new SimpleLoopsBackgroundService(
+        var sut = new AsyncLoopsBackgroundService(
             hostApplicationLifetimeMock.Object,
             [simpleLoop1Mock.Object, simpleLoop2Mock.Object],
             loggerMock.Object);
@@ -128,9 +128,9 @@ public class SimpleLoopsBackgroundServiceTests
     {
         // Arrange
         var hostApplicationLifetimeMock = new Mock<IHostApplicationLifetime>();
-        var simpleLoopMock = new Mock<ISimpleLoop>();
+        var simpleLoopMock = new Mock<IAsyncLoop>();
 
-        var sut = new SimpleLoopsBackgroundService(
+        var sut = new AsyncLoopsBackgroundService(
             hostApplicationLifetimeMock.Object,
             [simpleLoopMock.Object],
             loggerMock.Object);

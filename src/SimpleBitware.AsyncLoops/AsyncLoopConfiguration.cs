@@ -1,10 +1,10 @@
-﻿namespace Sb.SimpleLoops;
+﻿namespace SimpleBitware.AsyncLoops;
 
 /// <summary>
 /// Simple loop configuration.
 /// </summary>
 /// <typeparam name="T">The time of simple loop.</typeparam>
-public record SimpleLoopConfiguration<T>
+public record AsyncLoopConfiguration<T>
 {
     /// <summary>
     /// Wait time between iterations in milliseconds.
